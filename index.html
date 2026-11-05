@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyBudget</title>
+    <meta
+      name="description"
+      content="Track income, expenses, budgets, savings goals, and forecast your monthly cash flow."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Money overview</p>
+          <h1>MyBudget</h1>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="button secondary" id="export-csv">Export CSV</button>
+          <label class="button secondary import-button" for="import-csv">Import CSV</label>
+          <input type="file" id="import-csv" accept=".csv,text/csv" />
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel summary-grid" aria-label="Summary cards">
+          <article class="stat-card accent">
+            <p class="stat-label">Current balance</p>
+            <h2 id="current-balance">$0.00</h2>
+            <small id="balance-trend">Updated monthly</small>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">This month income</p>
+            <h2 id="monthly-income">$0.00</h2>
+            <small>Total recurring and one-off income</small>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">This month spending</p>
+            <h2 id="monthly-expense">$0.00</h2>
+            <small>Expenses tracked this month</small>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">Forecast</p>
+            <h2 id="forecast-balance">$0.00</h2>
+            <small>6-month projected balance</small>
+          </article>
+        </section>
+
+        <section class="panel form-panel" aria-labelledby="transaction-heading">
+          <div class="panel-header">
+            <h2 id="transaction-heading">Add transaction</h2>
+          </div>
+          <form id="transaction-form" class="stacked-form">
+            <div class="field-row two-up">
+              <div class="field">
+                <label for="title">Title</label>
+                <input id="title" name="title" type="text" placeholder="Salary, rent, side hustle" required />
+              </div>
+              <div class="field">
+                <label for="amount">Amount</label>
+                <input id="amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required />
+              </div>
+            </div>
+
+            <div class="field-row three-up">
+              <div class="field">
+                <label for="transaction-type">Type</label>
+                <select id="transaction-type" name="transaction-type">
+                  <option value="income">Income</option>
+                  <option value="expense">Expense</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="frequency">Frequency</label>
+                <select id="frequency" name="frequency">
+                  <option value="regular">Regular</option>
+                  <option value="irregular">Irregular</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="date">Date</label>
+                <input id="date" name="date" type="date" required />
+              </div>
+            </div>
+
+            <div class="field-row two-up">
+              <div class="field">
+                <label for="category">Category</label>
+                <input id="category" name="category" list="category-suggestions" placeholder="Housing" required />
+                <datalist id="category-suggestions"></datalist>
+              </div>
+              <div class="field">
+                <label for="notes">Notes</label>
+                <input id="notes" name="notes" type="text" placeholder="Optional details" />
+              </div>
+            </div>
+
+            <button type="submit" class="button primary">Save transaction</button>
+          </form>
+        </section>
+
+        <section class="panel budgets-panel" aria-labelledby="budgets-heading">
+          <div class="panel-header">
+            <h2 id="budgets-heading">Monthly budgets</h2>
+          </div>
+          <form id="budget-form" class="inline-form">
+            <div class="field">
+              <label for="budget-category">Category</label>
+              <input id="budget-category" name="budget-category" list="category-suggestions" placeholder="Food" required />
+            </div>
+            <div class="field">
+              <label for="budget-limit">Limit</label>
+              <input id="budget-limit" name="budget-limit" type="number" min="0.01" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="field">
+              <label for="budget-month">Month</label>
+              <input id="budget-month" name="budget-month" type="month" required />
+            </div>
+            <button type="submit" class="button primary">Add budget</button>
+          </form>
+          <ul id="budget-list" class="stack-list" aria-live="polite"></ul>
+        </section>
+
+        <section class="panel goals-panel" aria-labelledby="goals-heading">
+          <div class="panel-header">
+            <h2 id="goals-heading">Savings goals</h2>
+          </div>
+          <form id="goal-form" class="inline-form">
+            <div class="field">
+              <label for="goal-name">Goal</label>
+              <input id="goal-name" name="goal-name" type="text" placeholder="Emergency fund" required />
+            </div>
+            <div class="field">
+              <label for="goal-target">Target</label>
+              <input id="goal-target" name="goal-target" type="number" min="0.01" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="field">
+              <label for="goal-current">Saved</label>
+              <input id="goal-current" name="goal-current" type="number" min="0.00" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="field">
+              <label for="goal-date">Target date</label>
+              <input id="goal-date" name="goal-date" type="date" required />
+            </div>
+            <button type="submit" class="button primary">Add goal</button>
+          </form>
+          <ul id="goal-list" class="stack-list" aria-live="polite"></ul>
+        </section>
+
+        <section class="panel analytics-panel" aria-labelledby="analytics-heading">
+          <div class="panel-header analytics-header">
+            <h2 id="analytics-heading">Insights</h2>
+            <div class="range-filters">
+              <label>
+                Start
+                <input id="date-start" type="date" />
+              </label>
+              <label>
+                End
+                <input id="date-end" type="date" />
+              </label>
+            </div>
+          </div>
+
+          <div class="view-toggle" role="tablist" aria-label="Choose view">
+            <button type="button" class="toggle-button active" data-view="table" aria-pressed="true">Table</button>
+            <button type="button" class="toggle-button" data-view="chart" aria-pressed="false">Chart</button>
+          </div>
+
+          <div id="table-view" class="data-view active" aria-live="polite">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Frequency</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Notes</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transaction-body"></tbody>
+            </table>
+          </div>
+
+          <div id="chart-view" class="data-view" aria-live="polite">
+            <div class="chart-grid">
+              <div class="chart-card">
+                <h3>Balance trend</h3>
+                <canvas id="balance-chart" aria-label="Balance trend chart"></canvas>
+              </div>
+              <div class="chart-card">
+                <h3>Expense breakdown</h3>
+                <canvas id="category-chart" aria-label="Expense category chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="forecast-panel">
+            <h3>6-month forecast</h3>
+            <ul id="forecast-list" class="forecast-list" aria-live="polite"></ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
