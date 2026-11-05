@@ -367,8 +367,8 @@ function renderCharts() {
         {
           label: "Balance",
           data: monthlyBreakdown.values,
-          borderColor: "#d94f8d",
-          backgroundColor: "rgba(217, 79, 141, 0.12)",
+          borderColor: "#14532d",
+          backgroundColor: "rgba(20, 83, 45, 0.12)",
           borderWidth: 3,
           fill: true,
           tension: 0.4,
@@ -400,12 +400,12 @@ function renderCharts() {
         {
           data: expenseByCategory.values,
           backgroundColor: [
-            "#d94f8d",
+            "#14532d",
             "#8d6ae6",
-            "#f4a7c5",
-            "#ffcbdf",
+            "#86c995",
+            "#b8dfc0",
             "#c9bbff",
-            "#ff8ca3",
+            "#5caa70",
           ],
           borderWidth: 0,
         },
